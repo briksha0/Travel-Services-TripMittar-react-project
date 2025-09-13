@@ -15,10 +15,12 @@ cd train-reservation-app
 cd frontend && npm install
 cd ../backend && npm install
 ```
-```Run backend
+Run Backend
+```
 cd backend
 npm start
 ```
+Run Frontend
 ```Run Frontend
 cd frontend
 npm run dev
