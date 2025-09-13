@@ -1,3 +1,26 @@
+# 🚂 Train Reservation System
+
+A fullstack train, bus, hotel booking & live status project.
+
+## 📂 Project Structure
+- `frontend/` → React + Vite + Tailwind frontend
+- `backend/` → Express + MySQL backend
+
+## 🚀 Setup Instructions
+
+### 1. Clone the repo
+```bash
+git clone https://github.com/briksha0/train-reservation-app.git
+cd train-reservation-app
+cd frontend && npm install
+cd ../backend && npm install
+Run Backend
+cd backend
+npm start
+Run Frontend
+cd frontend
+npm run dev
+
 <img width="1899" height="905" alt="Screenshot 2025-09-12 234006" src="https://github.com/user-attachments/assets/2c3d2ece-b9d8-4508-8e71-018fdce30384" />
 <img width="1883" height="921" alt="Screenshot 2025-09-12 234046" src="https://github.com/user-attachments/assets/c27ad886-2d6a-4223-a5f1-dcba89a6485e" />
 <img width="1895" height="922" alt="Screenshot 2025-09-12 234105" src="https://github.com/user-attachments/assets/be73dac3-5719-493d-9ae7-33febfe00d53" />
