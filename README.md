@@ -14,10 +14,12 @@ git clone https://github.com/briksha0/train-reservation-app.git
 cd train-reservation-app
 cd frontend && npm install
 cd ../backend && npm install
-Run Backend
+```
+```Run backend
 cd backend
 npm start
-Run Frontend
+```
+```Run Frontend
 cd frontend
 npm run dev
 
