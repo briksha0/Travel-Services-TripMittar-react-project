@@ -27,17 +27,17 @@ export const authMiddleware = (req, res, next) => {
 router.post("/signup", async (req, res) => {
   try {
     const db = await initDB();
-    const { username, password, email } = req.body;
+    const { fullname, username, password } = req.body;
 
-    if (!username || !password || !email) {
+    if (!fullname || !username || !password) {
       return res.status(400).json({ message: "⚠️ All fields are required" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
     await db.execute(
-      "INSERT INTO users (username, email, password) VALUES (?, ?, ?)",
-      [username, email, hashedPassword]
+      "INSERT INTO users (fullname, username, password) VALUES (?, ?, ?)",
+      [fullname, username, hashedPassword]
     );
 
     res.json({ message: "✅ User registered successfully" });

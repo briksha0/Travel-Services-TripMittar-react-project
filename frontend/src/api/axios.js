@@ -1,11 +1,10 @@
-// src/api/axios.js
+// frontend/src/api/axios.js
 import axios from "axios";
 
+const backendURL = import.meta.env.VITE_BACKEND_URL;
+
 const api = axios.create({
-  baseURL: "http://192.168.241.222:5000/", // 👈 use LAN IP, not `/api`
-  withCredentials: true,
+  baseURL: backendURL,
 });
 
 export default api;
-
-

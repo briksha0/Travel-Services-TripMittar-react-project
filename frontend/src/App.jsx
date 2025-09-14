@@ -6,7 +6,6 @@ import { FlightHome } from "./components/FlightBooking/FlightHome";
 import Login from "./components/FlightBooking/Login";
 import Signup from "./components/FlightBooking/Signup";
 import TrainBooking from "./components/TrainBooking/TrainBooking";
-import Profile from "./components/FlightBooking/Profile";
 import { FlightDetails } from "./components/FlightBooking/FlightDetails";
 import ConfirmationPage from "./components/Layout/ConfirmationPage";
 
@@ -32,6 +31,7 @@ import HotelPayment from "./components/HotelBooking/HotelPayment";
 import MyBookings from "./components/Layout/MyBookings";
 import PaymentCab from "./components/CabBooking/PaymentCab";
 import Footer from "./components/Layout/Footer";
+import GoogleMapsLoader from "./components/Map/GoogleMapsLoader";
 // ------------------- Auth Context -------------------
 const AuthContext = createContext(null);
 export const useAuth = () => useContext(AuthContext);
@@ -82,6 +82,7 @@ function App() {
   return (
     <div className="min-h-screen flex flex-col bg-gray-900">
       <Navbar />
+      <GoogleMapsLoader />
       <main className="flex-grow">
         <Routes>
           {/* Public Routes */}
@@ -98,7 +99,7 @@ function App() {
           {/* Flights & Protected Routes */}
           <Route path="/flights/:flightId"element={<PrivateRoute><FlightDetails /></PrivateRoute>}/>
           <Route path="/flightpage" element={<FlightHome />} />
-          <Route path="/profile"element={<PrivateRoute><Profile /></PrivateRoute>}/>
+    
 
           {/* Payment + Confirmation */}
           <Route path="/payment" element={<PaymentFlight />} />
@@ -110,7 +111,8 @@ function App() {
           <Route path="/busbooking" element={<BusBooking />} />
           <Route path="/buses/list" element={<BusList />} />
           <Route path="/buses/payment" element={<PrivateRoute><BusPayment/></PrivateRoute> } />
-        {/* Hotel Booking */}         
+        {/* Hotel Booking */}  
+          <Route path="/hotels" element={<HotelSearch />} />       
         <Route path="/hotels/list" element={<HotelList />} />
           <Route path="/hotels/payment" element={<PrivateRoute><HotelPayment /></PrivateRoute>} />
           <Route path="/my-bookings" element={<PrivateRoute><MyBookings /></PrivateRoute>}/>

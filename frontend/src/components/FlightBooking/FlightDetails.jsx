@@ -9,32 +9,38 @@ export const FlightDetails = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  const [flight, setFlight] = useState(state?.flight || null);
+  const [flight, setFlight] = useState(null);
 
+  // 🛫 Restore / Save flight session
   useEffect(() => {
     if (state?.flight) {
       sessionStorage.setItem("flightBooking", JSON.stringify(state.flight));
       setFlight(state.flight);
     } else {
       const savedFlight = sessionStorage.getItem("flightBooking");
-      if (savedFlight) setFlight(JSON.parse(savedFlight));
+      if (savedFlight) {
+        setFlight(JSON.parse(savedFlight));
+      }
     }
   }, [state]);
 
   if (!flight) {
     return (
       <div className="mt-24 text-center">
-        <p className="text-red-500 text-lg font-semibold">No flight data found.</p>
+        <p className="text-red-500 text-lg font-semibold">
+          No flight data found.
+        </p>
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => navigate("/")}
           className="mt-4 bg-blue-600 text-white px-5 py-2 rounded-lg shadow hover:bg-blue-700 transition"
         >
-          Go Back
+          Go Home
         </button>
       </div>
     );
   }
 
+  // 💳 Handle Payment
   const handlePayment = async () => {
     if (!user) {
       alert("⚠️ Please sign in to proceed with payment.");
@@ -68,6 +74,8 @@ export const FlightDetails = () => {
             const verifyRes = await verifyPayment(response);
             if (verifyRes.success) {
               alert("✅ Payment Successful!");
+
+              // 🧹 Clear session once confirmed
               sessionStorage.removeItem("flightBooking");
 
               navigate("/confirmation", {
@@ -107,18 +115,22 @@ export const FlightDetails = () => {
         {/* Flight Info */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-gray-800 rounded-2xl p-6 shadow hover:shadow-xl transition">
-            <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">Departure</h3>
-            <p className="font-medium">{flight.departure?.airport} ({flight.departure?.iata})</p>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+            <h3 className="text-lg font-semibold text-gray-300 mb-2">Departure</h3>
+            <p className="font-medium text-white">
+              {flight.departure?.airport} ({flight.departure?.iata})
+            </p>
+            <p className="text-sm text-gray-400 mt-1">
               {flight.departure?.scheduled
                 ? new Date(flight.departure.scheduled).toLocaleString()
                 : "-"}
             </p>
           </div>
           <div className="bg-gray-800 rounded-2xl p-6 shadow hover:shadow-xl transition">
-            <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">Arrival</h3>
-            <p className="font-medium">{flight.arrival?.airport} ({flight.arrival?.iata})</p>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+            <h3 className="text-lg font-semibold text-gray-300 mb-2">Arrival</h3>
+            <p className="font-medium text-white">
+              {flight.arrival?.airport} ({flight.arrival?.iata})
+            </p>
+            <p className="text-sm text-gray-400 mt-1">
               {flight.arrival?.scheduled
                 ? new Date(flight.arrival.scheduled).toLocaleString()
                 : "-"}
@@ -128,8 +140,11 @@ export const FlightDetails = () => {
 
         {/* Flight Number */}
         <div className="mt-8 text-center">
-          <p className="text-lg font-medium text-gray-800 dark:text-gray-200">
-            Flight No: <span className="text-blue-600 dark:text-blue-400 font-bold">{flight.flight?.number || "-"}</span>
+          <p className="text-lg font-medium text-gray-200">
+            Flight No:{" "}
+            <span className="text-blue-400 font-bold">
+              {flight.flight?.number || "-"}
+            </span>
           </p>
         </div>
 
@@ -137,13 +152,13 @@ export const FlightDetails = () => {
         <div className="mt-10 flex flex-col md:flex-row justify-center gap-6">
           <button
             onClick={() => navigate(-1)}
-            className="w-full md:w-auto bg-gray-700 dark:bg-gray-800 text-white px-6 py-3 rounded-2xl shadow hover:bg-gray-800 dark:hover:bg-gray-700 transition font-medium"
+            className="w-full md:w-auto bg-gray-700 text-white px-6 py-3 rounded-2xl shadow hover:bg-gray-800 transition font-medium"
           >
             ← Back
           </button>
           <button
             onClick={handlePayment}
-            className="w-full md:w-auto bg-blue-600 text-white px-6 py-3 rounded-2xl shadow hover:bg-blue-700 dark:hover:bg-blue-500 transition font-medium"
+            className="w-full md:w-auto bg-blue-600 text-white px-6 py-3 rounded-2xl shadow hover:bg-blue-700 transition font-medium"
           >
             Proceed to Payment
           </button>
@@ -152,5 +167,3 @@ export const FlightDetails = () => {
     </div>
   );
 };
-
-

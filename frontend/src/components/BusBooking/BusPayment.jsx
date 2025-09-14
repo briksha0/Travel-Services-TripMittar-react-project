@@ -1,5 +1,5 @@
 // frontend/src/components/BusBooking/BusPayment.jsx
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../../App";
@@ -7,23 +7,48 @@ import { useAuth } from "../../App";
 const BusPayment = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
-  // Get booking details from navigation state
-  const { bus, pickupStop, dropStop, date } = useLocation().state || {};
+  // ✅ State for booking
+  const [booking, setBooking] = useState(null);
 
-  if (!bus) {
-    return <p className="pt-24 text-center text-gray-400">⚠️ No bus selected.</p>;
+  useEffect(() => {
+    // Try to get booking details from navigation state
+    if (location.state) {
+      setBooking(location.state);
+      sessionStorage.setItem("pendingBooking", JSON.stringify(location.state));
+    } else {
+      // Otherwise, try to restore from sessionStorage
+      const saved = sessionStorage.getItem("pendingBooking");
+      if (saved) {
+        setBooking(JSON.parse(saved));
+      }
+    }
+  }, [location.state]);
+
+  if (!booking) {
+    return (
+      <p className="pt-24 text-center text-gray-400">
+        ⚠️ No booking details found. Please go back and select your bus.
+      </p>
+    );
   }
 
+  const { bus, pickup, drop, date, boardingStop } = booking;
   const totalFare = bus.price || 500;
 
   const handlePayment = async () => {
     try {
-      // Create Razorpay order (amount in paise)
       const { data } = await axios.post("http://localhost:5000/api/payment/orders", {
         amount: totalFare, // paise
         currency: "INR",
-        notes: { bus: bus.name, pickupStop, dropStop, date },
+        notes: {
+          bus: bus.name,
+          pickup: pickup?.name,
+          drop: drop?.name,
+          boardingStop,
+          date,
+        },
       });
 
       if (!window.Razorpay) {
@@ -36,13 +61,14 @@ const BusPayment = () => {
         amount: data.order.amount,
         currency: data.order.currency,
         name: "Trip Mittar - Bus Booking",
-        description: `${bus.name} | ${pickupStop} → ${dropStop} on ${date}`,
+        description: `${bus.name} | ${pickup?.name} → ${drop?.name} (${boardingStop}) on ${date}`,
         order_id: data.order.id,
         handler: async (response) => {
           const verifyRes = await axios.post("http://localhost:5000/api/payment/verify", response);
           if (verifyRes.data.success) {
             alert("✅ Payment successful!");
-            navigate("/success", { state: { bus, pickupStop, dropStop, date, totalFare } });
+            sessionStorage.removeItem("pendingBooking"); // clear after success
+            navigate("/success", { state: { ...booking, totalFare } });
           } else {
             alert("❌ Payment verification failed");
           }
@@ -51,7 +77,7 @@ const BusPayment = () => {
           name: user?.fullname || "Guest",
           email: user?.email || "guest@example.com",
         },
-        theme: { color: "#165ef9ff" },
+        theme: { color: "#165ef9" },
       };
 
       new window.Razorpay(options).open();
@@ -64,12 +90,15 @@ const BusPayment = () => {
   return (
     <div className="pt-24 min-h-screen flex justify-center items-center bg-gray-900">
       <div className="bg-gray-800 shadow-2xl rounded-2xl p-8 max-w-lg w-full text-gray-100">
-        <h1 className="text-2xl font-bold mb-6 text-blue-400">🚌 Confirm Your Bus Booking</h1>
+        <h1 className="text-2xl font-bold mb-6 text-blue-400">
+          🚌 Confirm Your Bus Booking
+        </h1>
 
         <div className="space-y-2">
           <p><strong>Bus:</strong> {bus.name}</p>
-          <p><strong>Pickup Stop:</strong> {pickupStop}</p>
-          <p><strong>Drop Stop:</strong> {dropStop}</p>
+          <p><strong>From:</strong> {pickup?.name}</p>
+          <p><strong>To:</strong> {drop?.name}</p>
+          <p><strong>Boarding Stop:</strong> {boardingStop}</p>
           <p><strong>Date:</strong> {new Date(date).toLocaleDateString()}</p>
         </div>
 

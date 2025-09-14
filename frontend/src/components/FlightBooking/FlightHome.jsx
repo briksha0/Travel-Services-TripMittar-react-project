@@ -20,10 +20,25 @@ export const FlightHome = () => {
   ];
   const [current, setCurrent] = useState(0);
 
+  // ⏳ Hero image slider
   useEffect(() => {
     const id = setInterval(() => setCurrent((i) => (i + 1) % images.length), 5000);
     return () => clearInterval(id);
   }, [images.length]);
+
+  // ✈️ Flight session persistence
+  useEffect(() => {
+    const savedSearch = sessionStorage.getItem("lastFlightSearch");
+    if (savedSearch) {
+      console.log("🔄 Restored flight search from session:", JSON.parse(savedSearch));
+      // 👉 You can pass this to <FlightResults /> via props or store
+    }
+  }, []);
+
+  const handleSearchSave = (searchData) => {
+    sessionStorage.setItem("lastFlightSearch", JSON.stringify(searchData));
+    console.log("✅ Flight search saved:", searchData);
+  };
 
   const tips = [
     { icon: "🛄", title: "Baggage", text: "Carry-on 7kg | Check-in 20kg." },
@@ -99,19 +114,26 @@ export const FlightHome = () => {
 
       {/* Search Flights */}
       <main id="search" className="container mx-auto px-6 py-16">
-        <h3 className="text-3xl font-bold text-center mb-8 text-blue-400">Search & Book Flights</h3>
+        <h3 className="text-3xl font-bold text-center mb-8 text-blue-400">
+          Search & Book Flights
+        </h3>
         <Card>
-          <FlightResults />
+          {/* ⬇️ Pass session persistence handler */}
+          <FlightResults onSearchSave={handleSearchSave} />
         </Card>
       </main>
 
       {/* Tips */}
       <section className="py-16 bg-gray-800">
-        <h3 className="text-3xl font-semibold text-center mb-12 text-blue-400">Travel Guidelines</h3>
+        <h3 className="text-3xl font-semibold text-center mb-12 text-blue-400">
+          Travel Guidelines
+        </h3>
         <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto px-6">
           {tips.map((t, i) => (
             <Card key={i} className="bg-gray-700 hover:bg-gray-600 transition">
-              <h4 className="font-bold mb-2 text-blue-300">{t.icon} {t.title}</h4>
+              <h4 className="font-bold mb-2 text-blue-300">
+                {t.icon} {t.title}
+              </h4>
               <p className="text-blue-200 text-sm">{t.text}</p>
             </Card>
           ))}
@@ -120,11 +142,20 @@ export const FlightHome = () => {
 
       {/* Features */}
       <section className="py-16">
-        <h3 className="text-3xl font-semibold text-center mb-12 text-blue-400">Flights & Airports</h3>
+        <h3 className="text-3xl font-semibold text-center mb-12 text-blue-400">
+          Flights & Airports
+        </h3>
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto px-6">
           {features.map((f, i) => (
-            <Card key={i} className="p-0 overflow-hidden hover:shadow-xl transition">
-              <img src={f.img} alt={f.title} className="w-full h-40 object-cover" />
+            <Card
+              key={i}
+              className="p-0 overflow-hidden hover:shadow-xl transition"
+            >
+              <img
+                src={f.img}
+                alt={f.title}
+                className="w-full h-40 object-cover"
+              />
               <div className="p-6 bg-gray-800">
                 <h4 className="font-bold mb-2 text-blue-300">{f.title}</h4>
                 <p className="text-blue-200 text-sm">{f.desc}</p>
@@ -136,12 +167,19 @@ export const FlightHome = () => {
 
       {/* Testimonials */}
       <section className="py-16 bg-gray-800">
-        <h3 className="text-3xl font-semibold text-center mb-12 text-blue-400">What Our Travelers Say</h3>
+        <h3 className="text-3xl font-semibold text-center mb-12 text-blue-400">
+          What Our Travelers Say
+        </h3>
         <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto px-6">
           {testimonials.map((t, i) => (
-            <Card key={i} className="italic bg-gray-700 hover:bg-gray-600 transition">
+            <Card
+              key={i}
+              className="italic bg-gray-700 hover:bg-gray-600 transition"
+            >
               <p className="mb-4 text-blue-200">“{t.text}”</p>
-              <h5 className="font-semibold not-italic text-blue-300">{t.name}</h5>
+              <h5 className="font-semibold not-italic text-blue-300">
+                {t.name}
+              </h5>
             </Card>
           ))}
         </div>
@@ -149,9 +187,16 @@ export const FlightHome = () => {
 
       {/* CTA */}
       <section className="bg-gradient-to-r from-blue-600 to-blue-800 text-white text-center py-16">
-        <h3 className="text-3xl md:text-4xl font-bold mb-4">Plan Your Next Adventure</h3>
-        <p className="mb-6 text-blue-100">Find destinations, deals, and fly with comfort.</p>
-        <a href="#search" className="px-8 py-3 bg-white text-blue-700 font-semibold rounded-full shadow-lg hover:bg-gray-100 transition">
+        <h3 className="text-3xl md:text-4xl font-bold mb-4">
+          Plan Your Next Adventure
+        </h3>
+        <p className="mb-6 text-blue-100">
+          Find destinations, deals, and fly with comfort.
+        </p>
+        <a
+          href="#search"
+          className="px-8 py-3 bg-white text-blue-700 font-semibold rounded-full shadow-lg hover:bg-gray-100 transition"
+        >
           Search Flights
         </a>
       </section>
@@ -159,10 +204,10 @@ export const FlightHome = () => {
       {/* Footer */}
       <footer className="bg-gray-900 text-blue-300 py-6 text-center">
         © {new Date().getFullYear()} TripMittar Airlines ·{" "}
-        <a href="#" className="hover:text-white">Privacy</a>
+        <a href="#" className="hover:text-white">
+          Privacy
+        </a>
       </footer>
     </div>
   );
 };
-
-

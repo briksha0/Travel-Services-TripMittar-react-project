@@ -11,11 +11,6 @@ const BusBooking = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSwap = () => {
-    if (!pickup && !drop) return;
-    setPickup(drop);
-    setDrop(pickup);
-  };
 
   const handleBooking = (e) => {
     e.preventDefault();
@@ -49,7 +44,7 @@ const BusBooking = () => {
         {/* Pickup */}
         <div>
           <label className="block mb-2 font-medium text-gray-700 dark:text-gray-300">
-            Pickup Location
+            From
           </label>
           <div className="flex text-white items-center gap-2 border border-gray-300 dark:border-gray-600
                           rounded-xl px-4 py-3 focus-within:ring-2 focus-within:ring-blue-400">
@@ -62,22 +57,11 @@ const BusBooking = () => {
           </div>
         </div>
 
-        {/* Swap */}
-        <div className="flex justify-center">
-          <button
-            onClick={handleSwap}
-            className="p-3 bg-blue-500 text-white rounded-full shadow-lg
-                       hover:bg-blue-600 transform hover:scale-105 active:scale-95 transition"
-            aria-label="Swap pickup and drop"
-          >
-            <ArrowUpDown size={20} />
-          </button>
-        </div>
-
+       
         {/* Drop */}
         <div>
           <label className="block mb-2 font-medium text-gray-700 dark:text-gray-300">
-            Drop Location
+            To
           </label>
           <div className="flex text-white items-center gap-2 border border-gray-300 dark:border-gray-600
                           rounded-xl px-4 py-3 focus-within:ring-2 focus-within:ring-green-400">

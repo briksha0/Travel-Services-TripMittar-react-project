@@ -27,19 +27,26 @@ const BusStopsSelector = ({ bus, pickup, drop, date }) => {
     }
 
     const bookingData = { bus, pickup, drop, date, boardingStop: selectedStop };
+
+    // ✅ Save once for persistence
     sessionStorage.setItem("pendingBooking", JSON.stringify(bookingData));
+
     navigate("/buses/payment", { state: bookingData });
   };
 
   return (
     <div className="mt-3 w-full">
-      <label className="block text-sm font-medium mb-2 text-gray-200">🚌 Select Boarding Stop</label>
+      <label className="block text-sm font-medium mb-2 text-gray-200">
+        🚌 Select Boarding Stop
+      </label>
       <select
         value={selectedStop}
         onChange={(e) => setSelectedStop(e.target.value)}
         className="w-full border border-gray-600 bg-gray-800 text-gray-100 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
       >
-        <option value="" className="bg-gray-800 text-gray-100">-- Choose Stop --</option>
+        <option value="" className="bg-gray-800 text-gray-100">
+          -- Choose Stop --
+        </option>
         {stops.map((stop) => (
           <option
             key={stop.id}

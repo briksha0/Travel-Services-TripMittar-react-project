@@ -38,7 +38,7 @@ const BusSchedule = () => {
   }, [pickup, drop, date]);
 
   if (!pickup || !drop || !date) {
-    return <p className="pt-24 text-center text-gray-400">⚠️ Please search for buses first.</p>;
+    return <p className=" pt-24 text-center text-gray-400">⚠️ Please search for buses first.</p>;
   }
 
   return (
@@ -65,12 +65,13 @@ const BusSchedule = () => {
                   {bus.name}
                 </h2>
                 <p className="text-sm text-gray-300 mt-1 hover:text-gray-100 transition-colors duration-300">
-                  Departure: {bus.departure} · Arrival: {bus.arrival} · Duration: {bus.duration}
+                  Departure: {bus.departure} <br/>
+                  Arrival: {bus.arrival} Duration: {bus.duration}
                 </p>
               </div>
 
               {/* Select boarding stop */}
-              <BusStopsSelector bus={bus} pickup={pickup} drop={drop} date={date} />
+              <BusStopsSelector bus={bus} pickup={pickup} drop={drop} date={date}  />
             </div>
             <p className="mt-3 text-xl font-bold text-white transition-colors duration-300">
               ₹{bus.price}

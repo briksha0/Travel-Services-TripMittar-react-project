@@ -1,3 +1,4 @@
+// backend/server.js
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -22,8 +23,23 @@ const razorpay = new Razorpay({
   key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
 
+// ✅ Allowed origins
+const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(",") || [];
+
 // ✅ Middleware
-app.use(cors({ origin: "http://192.168.241.222:5173", credentials: true }));
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 app.use(bodyParser.json());
 
@@ -38,5 +54,5 @@ app.use("/api/hotel-booking", bookingsRoutes);
 app.use("/api/payment", paymentRoutes(razorpay));
 
 app.listen(port, "0.0.0.0", () => {
-  console.log(`Server running at http://192.168.241.222:${port}`);
+  console.log(`🚀 Server running at http://localhost:${port}`);
 });

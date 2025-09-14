@@ -1,31 +1,33 @@
 import mysql from "mysql2/promise";
 
-let db; // shared connection
+let pool;
 
 export async function initDB() {
-  if (!db) {
+  if (!pool) {
     try {
-      // Connect to MySQL (without database first)
+      pool = mysql.createPool({
+        host: process.env.DB_HOST ,
+        user: process.env.DB_USER ,
+        password: process.env.DB_PASS ,
+        database: process.env.DB_NAME ,
+        waitForConnections: true,
+        connectionLimit: 10,
+        queueLimit: 0,
+      });
+
+      // Create DB if not exists (use single connection first)
       const connection = await mysql.createConnection({
-        host: "localhost",
-        user: "root",
-        password: "",
+        host: process.env.DB_HOST || "localhost",
+        user: process.env.DB_USER || "root",
+        password: process.env.DB_PASS || "",
       });
+      await connection.query(`CREATE DATABASE IF NOT EXISTS mydb`);
+      await connection.end();
 
-      // Create database if not exists
-      await connection.query("CREATE DATABASE IF NOT EXISTS mydb");
-      console.log("✅ Database 'mydb' ensured");
+      console.log("✅ Database connected & ensured");
 
-      // Connect to 'mydb'
-      db = await mysql.createConnection({
-        host: "localhost",
-        user: "root",
-        password: "",
-        database: "mydb",
-      });
-
-      // Create tables one by one
-      await db.query(`
+      // Run migrations (tables)
+      await pool.query(`
         CREATE TABLE IF NOT EXISTS users (
           id INT AUTO_INCREMENT PRIMARY KEY,
           username VARCHAR(100) UNIQUE NOT NULL,
@@ -34,7 +36,7 @@ export async function initDB() {
         );
       `);
 
-      await db.query(`
+      await pool.query(`
         CREATE TABLE IF NOT EXISTS hotels (
           id INT AUTO_INCREMENT PRIMARY KEY,
           name VARCHAR(255) NOT NULL,
@@ -46,7 +48,7 @@ export async function initDB() {
         );
       `);
 
-      await db.query(`
+      await pool.query(`
         CREATE TABLE IF NOT EXISTS hotel_bookings (
           id INT AUTO_INCREMENT PRIMARY KEY,
           user_id INT NOT NULL,
@@ -62,7 +64,7 @@ export async function initDB() {
         );
       `);
 
-      await db.query(`
+      await pool.query(`
         CREATE TABLE IF NOT EXISTS buses (
           id INT AUTO_INCREMENT PRIMARY KEY,
           name VARCHAR(100) NOT NULL,
@@ -75,7 +77,7 @@ export async function initDB() {
         );
       `);
 
-      await db.query(`
+      await pool.query(`
         CREATE TABLE IF NOT EXISTS bus_stops (
           id INT AUTO_INCREMENT PRIMARY KEY,
           bus_id INT NOT NULL,
@@ -86,17 +88,16 @@ export async function initDB() {
         );
       `);
 
-      console.log("✅ All tables ensured");
-
+      console.log("✅ Tables ensured");
     } catch (err) {
       console.error("❌ Database initialization failed:", err.message);
       process.exit(1);
     }
   }
-  return db;
+  return pool;
 }
 
 export function getDB() {
-  if (!db) throw new Error("⚠️ Database not initialized. Call initDB() first.");
-  return db;
+  if (!pool) throw new Error("⚠️ Database not initialized. Call initDB() first.");
+  return pool;
 }

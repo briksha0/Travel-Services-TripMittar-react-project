@@ -8,7 +8,7 @@ const PaymentButton = ({ amount, service, bookingId }) => {
       const order = await createOrder(amount, service, bookingId);
 
       const options = {
-        key: "rzp_test_RB3wVUPixMWL3V", // 👉 Use your Razorpay test key
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID, // 👉 Use your Razorpay test key
         amount: order.amount,
         currency: order.currency,
         name: "My Travel App",

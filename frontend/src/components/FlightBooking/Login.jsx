@@ -44,27 +44,43 @@ export default function SignIn() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen px-4">
+    <div className="mt-10  flex items-center justify-center min-h-screen  px-4">
       <motion.div
-        initial={{ opacity: 0, scale: 0.9, y: 30 }}
+        initial={{ opacity: 0, scale: 0.9, y: 40 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-        className="w-full max-w-md p-8 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/30"
+        transition={{ duration: 0.5 }}
+        className="w-full max-w-md p-10 bg-white/20 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/30"
       >
-        <h2 className="text-3xl font-extrabold text-center text-white drop-shadow mb-6">
-          🔐 Welcome Back
-        </h2>
+        {/* Logo / Header */}
+        <div className="text-center mb-6">
+          <motion.div
+            initial={{ rotate: -10 }}
+            animate={{ rotate: 0 }}
+            transition={{ type: "spring", stiffness: 120 }}
+            className="w-16 h-16 mx-auto mb-3 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center shadow-lg"
+          >
+            <Lock className="text-white w-7 h-7" />
+          </motion.div>
+          <h2 className="text-3xl font-extrabold text-white drop-shadow">
+            Welcome
+          </h2>
+          <p className="text-gray-200 text-sm mt-1">
+            Sign in to continue your journey
+          </p>
+        </div>
 
+        {/* Error Alert */}
         {message && (
-          <motion.p
+          <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-4 p-3 text-sm text-red-700 bg-red-100 rounded-lg"
+            className="mb-5 rounded-lg bg-red-500/10 border border-red-500 text-red-600 px-4 py-2 text-sm"
           >
             {message}
-          </motion.p>
+          </motion.div>
         )}
 
+        {/* Form */}
         <form onSubmit={handleSignIn} className="space-y-5">
           {/* Username */}
           <div className="relative">
@@ -77,7 +93,7 @@ export default function SignIn() {
               placeholder="Enter your username"
               autoComplete="username"
               required
-              className="w-full pl-10 pr-4 py-2 rounded-lg bg-white border border-gray-300 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+              className="w-full pl-10 pr-4 py-2.5 rounded-lg bg-white/90 border border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
             />
           </div>
 
@@ -92,26 +108,32 @@ export default function SignIn() {
               placeholder="Enter your password"
               autoComplete="current-password"
               required
-              className="w-full pl-10 pr-4 py-2 rounded-lg bg-white/80 border border-gray-300 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+              className="w-full pl-10 pr-4 py-2.5 rounded-lg bg-white/90 border border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
             />
           </div>
 
-          <button
+          {/* Submit */}
+          <motion.button
             type="submit"
             disabled={loading}
-            className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-2 rounded-lg font-semibold shadow-md hover:from-blue-600 hover:to-indigo-700 transition disabled:opacity-60"
+            whileTap={{ scale: 0.97 }}
+            className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-2.5 rounded-lg font-semibold shadow-lg hover:from-blue-600 hover:to-indigo-700 transition disabled:opacity-60"
           >
             {loading ? (
               <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
             ) : (
               "Sign In"
             )}
-          </button>
+          </motion.button>
         </form>
 
-        <p className="text-sm text-center text-gray-200 mt-5">
+        {/* Sign Up Link */}
+        <p className="text-sm text-center text-gray-200 mt-6">
           Don’t have an account?{" "}
-          <Link to="/signup" className="text-white font-semibold hover:underline">
+          <Link
+            to="/signup"
+            className="text-white font-semibold hover:underline"
+          >
             Sign up here
           </Link>
         </p>

@@ -13,13 +13,16 @@ function Signup() {
   const [isSuccess, setIsSuccess] = useState(false);
   const navigate = useNavigate();
 
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+
   const handleSignUp = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        "http://192.168.241.222:5000/api/auth/signup",
-        { fullname, username, password }
-      );
+      const response = await axios.post(`${apiBaseUrl}/api/auth/signup`, {
+        fullname,
+        username,
+        password,
+      });
 
       setMessage(response.data.message);
       setIsSuccess(true);
@@ -28,13 +31,13 @@ function Signup() {
         navigate("/signin");
       }, 1500);
     } catch (error) {
-      setMessage(error.response?.data.message || "❌ An error occurred.");
+      setMessage(error.response?.data?.message || "❌ An error occurred.");
       setIsSuccess(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 px-4">
+    <div className="mt-10 flex items-center justify-center min-h-screen px-4">
       <motion.div
         initial={{ opacity: 0, scale: 0.9, y: 30 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -50,9 +53,7 @@ function Signup() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             className={`mb-4 p-3 text-sm rounded-lg ${
-              isSuccess
-                ? "text-green-700 bg-green-100"
-                : "text-red-700 bg-red-100"
+              isSuccess ? "text-green-700 bg-green-100" : "text-red-700 bg-red-100"
             }`}
           >
             {message}

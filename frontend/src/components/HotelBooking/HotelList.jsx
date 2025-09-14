@@ -34,6 +34,21 @@ const HotelList = () => {
     fetchHotels();
   }, [city]);
 
+  // ✅ Save search context in sessionStorage
+  useEffect(() => {
+    const searchData = { city, checkin, checkout, guests };
+    sessionStorage.setItem("lastHotelSearch", JSON.stringify(searchData));
+  }, [city, checkin, checkout, guests]);
+
+  const handleBooking = (hotel) => {
+    const bookingData = { hotel, checkin, checkout, guests };
+
+    // ✅ Persist booking before navigating
+    sessionStorage.setItem("pendingHotelBooking", JSON.stringify(bookingData));
+
+    navigate("/hotels/payment", { state: bookingData });
+  };
+
   return (
     <div className="p-6 pt-24 min-h-screen bg-gray-900 text-gray-100">
       <h1 className="text-3xl font-bold mb-6 text-blue-400">
@@ -70,7 +85,9 @@ const HotelList = () => {
               )}
 
               <div className="p-4">
-                <h2 className="text-xl font-semibold text-blue-400">{hotel.name}</h2>
+                <h2 className="text-xl font-semibold text-blue-400">
+                  {hotel.name}
+                </h2>
                 <p className="text-gray-300">{hotel.city}</p>
                 {hotel.address && (
                   <p className="text-sm text-gray-400 mt-1">{hotel.address}</p>
@@ -84,11 +101,7 @@ const HotelList = () => {
                 </div>
 
                 <button
-                  onClick={() =>
-                    navigate("/hotels/payment", {
-                      state: { hotel, checkin, checkout, guests },
-                    })
-                  }
+                  onClick={() => handleBooking(hotel)}
                   className="mt-4 w-full bg-blue-600 text-white py-2 rounded-xl hover:bg-blue-500 transition-colors duration-300 font-semibold shadow-md"
                 >
                   Book Now

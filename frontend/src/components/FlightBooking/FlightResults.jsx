@@ -32,8 +32,8 @@ export const FlightResults = () => {
 
     try {
       const response = await fetch(
-        `https://api.aviationstack.com/v1/flights?access_key=663c400e5bf9949ddf438dcf1bd02890&dep_iata=${dep}&arr_iata=${arr}&flight_date=${date}`
-      );
+      `https://api.aviationstack.com/v1/flights?access_key=${API_KEY}&dep_iata=${dep}&arr_iata=${arr}&flight_date=${date}`
+    );
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
