@@ -23,8 +23,10 @@ const razorpay = new Razorpay({
   key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
 
-// ✅ Allowed origins
-const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(",") || [];
+// ✅ Allowed origins from .env
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(",")
+  : ["http://localhost:5173"]; // fallback for local dev
 
 // ✅ Middleware
 app.use(
@@ -33,6 +35,7 @@ app.use(
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
+        console.error("❌ Blocked by CORS:", origin);
         callback(new Error("Not allowed by CORS"));
       }
     },
@@ -53,6 +56,8 @@ app.use("/api/hotel-booking", bookingsRoutes);
 // ✅ Payment routes (bus, cab, hotel, flight)
 app.use("/api/payment", paymentRoutes(razorpay));
 
+// ✅ Start server
 app.listen(port, "0.0.0.0", () => {
-  console.log(`🚀 Server running at http://localhost:${port}`);
+  console.log(`🚀 Server running on port ${port}`);
+  console.log("✅ Allowed Origins:", allowedOrigins);
 });
